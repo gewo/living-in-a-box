@@ -5,8 +5,8 @@ VAGRANTFILE_API_VERSION = '2'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = 'saucy64-gewo1'
-  config.vm.box_url = 'https://www.dropbox.com/s/eaf6cljbs2z/saucy64-gewo1.box'
-  config.vm.host_name = 'rails-dev-box.pwroff.de'
+  config.vm.box_url = 'https://dl.dropboxusercontent.com/s/eaf6cljbs2zjj9h/saucy64-gewo1.box'
+  # config.vm.host_name = 'lib.pwroff.de'
   config.vm.network :forwarded_port, guest: 3000, host: 3000
   config.ssh.forward_agent = true
 

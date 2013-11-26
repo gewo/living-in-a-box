@@ -39,6 +39,9 @@ package { [
   # MongoDB
   'mongodb',
 
+  # Janus Dependencies
+  'ruby-dev', 'rake', 'exuberant-ctags', 'ack-grep',
+
   # Dev Essentials :-)
   'tmux', 'vim-nox', 'zsh'
 
@@ -62,7 +65,7 @@ class install_rvm {
   rvm::system_user { vagrant: ; }
 
   rvm_system_ruby {
-    'ruby-2.0.0-p247':
+    'ruby-2.0.0-p353':
       ensure      => 'present',
       default_use => false;
     # 'ruby-1.9.3-p448':
@@ -71,15 +74,15 @@ class install_rvm {
   }
 
   rvm_gem {
-    'ruby-2.0.0-p247/bundler':
+    'ruby-2.0.0-p353/bundler':
       ensure => latest,
-      require => Rvm_system_ruby['ruby-2.0.0-p247'];
-    'ruby-2.0.0-p247/rails':
+      require => Rvm_system_ruby['ruby-2.0.0-p353'];
+    'ruby-2.0.0-p353/rails':
       ensure => latest,
-      require => Rvm_system_ruby['ruby-2.0.0-p247'];
-    'ruby-2.0.0-p247/rake':
+      require => Rvm_system_ruby['ruby-2.0.0-p353'];
+    'ruby-2.0.0-p353/rake':
       ensure => latest,
-      require => Rvm_system_ruby['ruby-2.0.0-p247'];
+      require => Rvm_system_ruby['ruby-2.0.0-p353'];
     # 'ruby-1.9.3-p448/bundler':
       # ensure => latest,
       # require => Rvm_system_ruby['ruby-1.9.3-p448'];
@@ -102,6 +105,6 @@ include install_rvm
 
 # make zsh the default shell
 # user { 'vagrant':
-    # ensure  => present,
-    # shell => '/usr/bin/zsh',
+  # ensure => present,
+  # shell  => '/usr/bin/zsh',
 # }
