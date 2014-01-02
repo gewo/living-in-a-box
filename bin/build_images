@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+for dir in $DIR/../docker/images/*/; do
+  cd $dir
+  image_name=${PWD##*/}
+  echo "Building $image_name from $dir"
+  docker build -t gewo/$image_name .
+done

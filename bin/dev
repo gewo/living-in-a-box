@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+APPS=${APPS:-~/docker_apps}
+
+before_run_mongodb() {
+  local name=$1
+  mkdir -p $APPS/$name/data/db
+}
+
+respond_to() {
+  type $1 >/dev/null 2>&1
+}
+
+before_run() {
+  local name=$1
+  if respond_to "before_run_$name"; then
+    before_run_$name $name
+  fi
+}
+
+port_arguments() {
+  local ports=""
+  for port in "$@"; do
+    ports+="-p $port:$port "
+  done
+  echo $ports
+}
+
+setup_image() {
+  local name=$1
+  mkdir -p $APPS/$name/data
+  mkdir -p $APPS/$name/logs
+}
+
+run_image() {
+  local name=$1
+  local ports=$(port_arguments "${@:2}")
+  local id=$(docker run \
+    -v $APPS/$name/data:/data \
+    -v $APPS/$name/logs:/logs \
+    -d \
+    -name $name \
+    $ports \
+    gewo/$name)
+  echo "Started $name in container $id"
+}
+
+start_image() {
+  local name=$1
+  setup_image $name
+  before_run $name
+  run_image $@
+}
+
+link_arguments() {
+  local links=""
+  for service in redis mongodb mysql; do
+    links+="-link $service:$service "
+  done
+  echo $links
+}
+
+start() {
+  start_image redis 6379
+  start_image mongodb 27017 28017
+  start_image mysql 3306
+}
+
+stop() {
+  local running=$(docker ps | tail -n +2 | cut -d' ' -f1)
+  if [ "$running" != "" ]; then
+    docker stop $running
+    docker rm $running
+  fi
+}
+
+shell() {
+  local links=$(link_arguments)
+  docker run \
+    -i -t \
+    -v $PWD:/mnt \
+    -p 3000:3000 \
+    $links \
+    gewo/rails
+}
+
+mkdir -p ${APPS}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  shell)
+    shell
+    ;;
+esac
