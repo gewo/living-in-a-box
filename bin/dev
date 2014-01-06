@@ -81,7 +81,8 @@ shell() {
     -v $PWD:/mnt \
     -p 3000:3000 \
     $links \
-    gewo/rails
+    gewo/rails \
+    /bin/bash
 }
 
 mkdir -p ${APPS}
