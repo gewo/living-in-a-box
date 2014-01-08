@@ -1,4 +1,4 @@
-# Rails Dev Environment (gewo/rails-dev)
+# Rails Dev Environment (gewo/rails)
 FROM gewo/rvm
 MAINTAINER Gebhard Wöstemeyer <g.woestemeyer@gmail.com>
 
@@ -22,6 +22,9 @@ RUN apt-get install -y libmysqlclient-dev
 # Headless Selenium Tests
 RUN apt-get install -y firefox xvfb || true
 
+# Java Runtime (for Solr, ...)
+RUN apt-get install -y openjdk-7-jre-headless
+
 RUN apt-get clean
 
 # Install Ruby
@@ -32,4 +35,4 @@ RUN rvm-shell -c "gem install bundler"
 RUN rvm-shell -c "gem install rake"
 RUN rvm-shell -c "gem install rails"
 
-CMD ["/bin/bash", "-l"]
+CMD ["/bin/bash"]
