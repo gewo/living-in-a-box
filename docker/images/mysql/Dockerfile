@@ -4,7 +4,7 @@ MAINTAINER Gebhard Wöstemeyer <g.woestemeyer@gmail.com>
 
 RUN \
   apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server-5.5 || true && \
+  apt-get install -y mysql-server-5.5 || true && \
   apt-get clean
 
 RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" \

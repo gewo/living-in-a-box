@@ -3,7 +3,6 @@ FROM gewo/rvm
 MAINTAINER Gebhard Wöstemeyer <g.woestemeyer@gmail.com>
 
 ENV APP_RUBY_VERSION 2.0.0
-ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
 

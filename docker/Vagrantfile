@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 
 # Based on https://github.com/dotcloud/docker/blob/master/Vagrantfile
+# Use with https://github.com/gewo/living-in-a-box
 
 BOX_NAME = ENV['BOX_NAME'] || "ubuntu"
 BOX_URI = ENV['BOX_URI'] || "http://files.vagrantup.com/precise64.box"
@@ -90,6 +91,18 @@ if [ ! -d /opt/VBoxGuestAdditions-4.3.6/ ]; then
 fi
 VBOX_SCRIPT
 
+$lib_script = <<LIB_SCRIPT << $vbox_script
+if [ ! -d /opt/living-in-a-box/ ]; then
+  echo 'Installing git...'
+  sudo apt-get install -y git
+  # Download http://github.com/gewo/living-in-a-box/
+  git clone https://github.com/gewo/living-in-a-box /opt/living-in-a-box
+
+  echo 'Symlinking dev binary...'
+  ln -s -t /usr/local/bin /opt/living-in-a-box/bin/dev
+fi
+LIB_SCRIPT
+
 Vagrant::Config.run do |config|
   # Setup virtual machine box. This VM configuration code is always executed.
   config.vm.box = BOX_NAME
@@ -151,7 +164,7 @@ Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
   end
 
   config.vm.provider :virtualbox do |vb, override|
-    override.vm.provision :shell, :inline => $vbox_script
+    override.vm.provision :shell, :inline => $lib_script
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     vb.customize ['modifyvm', :id, '--memory', '2048']
@@ -161,10 +174,10 @@ end
 # If this is a version 1 config, virtualbox is the only option.  A version 2
 # config would have already been set in the above provider section.
 Vagrant::VERSION < "1.1.0" and Vagrant::Config.run do |config|
-  config.vm.provision :shell, :inline => $vbox_script
+  config.vm.provision :shell, :inline => $lib_script
 end
 
-if !SKIP_FORWARD_DOCKER_PORTS.nil?
+if SKIP_FORWARD_DOCKER_PORTS.nil?
   Vagrant::VERSION < "1.1.0" and Vagrant::Config.run do |config|
     (49000..49900).each do |port|
       config.vm.forward_port port, port
