@@ -1,10 +1,26 @@
 #!/usr/bin/env bash
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
+IMAGE_DIR="$DIR/../docker/images"
 
-for dir in $DIR/../docker/images/*/; do
-  cd $dir
-  image_name=${PWD##*/}
-  echo "Building $image_name from $dir"
-  docker build -t gewo/$image_name .
-done
+build_image() {
+  local name="$1"
+  local tag="$2"
+  local build_dir="${IMAGE_DIR}/$name"
+
+  if [ "$tag" != "" ]; then
+    name="${name}:${tag}"
+    build_dir="${build_dir}-${tag}"
+  fi
+
+  echo "Building ${name} from ${build_dir}"
+  cd ${build_dir} && docker build -t gewo/${name} .
+}
+
+build_image base
+# build_image puppet
+build_image rvm
+build_image mongodb
+build_image mysql
+build_image redis
+build_image rails
