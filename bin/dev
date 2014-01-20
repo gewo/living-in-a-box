@@ -80,13 +80,17 @@ stop() {
 
 shell() {
   local links=$(link_arguments)
-  docker run \
+  local id=$(docker run \
+    -d \
     -i -t \
     -v $PWD:/mnt \
     -p 3000 \
     $links \
     gewo/rails \
-    /bin/bash
+    /bin/bash)
+  local port=$(docker port $id 3000)
+  echo "port 3000 forwarded to ${port}"
+  docker attach $id
 }
 
 mkdir -p ${APPS}
