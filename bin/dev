@@ -21,7 +21,7 @@ before_run() {
 port_arguments() {
   local ports=""
   for port in "$@"; do
-    ports+="-p $port:$port "
+    ports+="-p $port "
   done
   echo $ports
 }
@@ -60,14 +60,18 @@ link_arguments() {
   echo $links
 }
 
-start() {
+start_services() {
   start_image redis 6379
   start_image mongodb 27017 28017
   start_image mysql 3306
 }
 
+start() {
+  start_services
+}
+
 stop() {
-  local running=$(docker ps | tail -n +2 | cut -d' ' -f1)
+  local running=$(docker ps -q)
   if [ "$running" != "" ]; then
     docker stop $running
     docker rm $running
@@ -79,7 +83,7 @@ shell() {
   docker run \
     -i -t \
     -v $PWD:/mnt \
-    -p 3000:3000 \
+    -p 3000 \
     $links \
     gewo/rails \
     /bin/bash
