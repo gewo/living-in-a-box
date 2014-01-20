@@ -23,7 +23,7 @@ RUN apt-get install -y libmysqlclient-dev
 RUN apt-get install -y firefox xvfb || true
 
 # Java Runtime (for Solr, ...)
-RUN apt-get install -y openjdk-7-jre-headless
+RUN apt-get install -y openjdk-7-jre-headless || true
 
 RUN apt-get clean
 
