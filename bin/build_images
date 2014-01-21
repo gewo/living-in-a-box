@@ -23,4 +23,6 @@ build_image rvm
 build_image mongodb
 build_image mysql
 build_image redis
+build_image rails-dependencies
 build_image rails
+build_image rails ruby1.9.3

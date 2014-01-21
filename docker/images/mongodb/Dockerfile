@@ -8,7 +8,7 @@ RUN \
   echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen'\
     | tee /etc/apt/sources.list.d/10gen.list
 RUN apt-get update
-RUN apt-get install -y mongodb-10gen=${VERSION} || true
+RUN apt-get install -y mongodb-10gen=${VERSION}
 RUN apt-get clean
 RUN mkdir -p /data/db
 RUN mkdir -p /logs
