@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 APPS=${APPS:-~/docker_apps}
 
@@ -80,13 +81,19 @@ stop() {
 
 shell() {
   local links=$(link_arguments)
+  local image="gewo/rails"
+
+  if [ "$1" != "" ]; then
+    image="$1"
+  fi
+
   local id=$(docker run \
     -d \
     -i -t \
     -v $PWD:/mnt \
     -p 3000 \
     $links \
-    gewo/rails \
+    $image \
     /bin/bash)
   local port=$(docker port $id 3000)
   echo "port 3000 forwarded to ${port}"
@@ -95,7 +102,10 @@ shell() {
 
 mkdir -p ${APPS}
 
-case "$1" in
+cmd="$1"
+shift
+
+case "$cmd" in
   start)
     start
     ;;
@@ -103,6 +113,6 @@ case "$1" in
     stop
     ;;
   shell)
-    shell
+    shell ${@}
     ;;
 esac
