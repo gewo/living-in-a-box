@@ -7,6 +7,7 @@ DOTDIR="$HOME/.living-in-a-box"
 
 if [[ "$OSTYPE" == darwin* ]]; then
   VAGRANT="vagrant"
+  export FORWARD_DOCKER_PORTS=y
   export VAGRANT_DOTFILE_PATH="$DOTDIR/.vagrant"
   export VAGRANT_VAGRANTFILE="$DIR/../docker/Vagrantfile"
   export DOCKER_HOST=localhost
