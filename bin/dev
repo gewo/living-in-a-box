@@ -1,23 +1,16 @@
 #!/usr/bin/env bash
-set -x
 
-APPS=${APPS:-~/docker_apps}
+[ ! -z "$DEBUG" ] && set -x
 
-before_run_mongodb() {
-  local name=$1
-  mkdir -p $APPS/$name/data/db
-}
+DIR="$(cd "$(dirname "$0")" && pwd)"
+DOTDIR="$HOME/.living-in-a-box"
 
-respond_to() {
-  type $1 >/dev/null 2>&1
-}
-
-before_run() {
-  local name=$1
-  if respond_to "before_run_$name"; then
-    before_run_$name $name
-  fi
-}
+if [[ "$OSTYPE" == darwin* ]]; then
+  VAGRANT="vagrant"
+  export VAGRANT_DOTFILE_PATH="$DOTDIR/.vagrant"
+  export VAGRANT_VAGRANTFILE="$DIR/../docker/Vagrantfile"
+  export DOCKER_HOST=localhost
+fi
 
 port_arguments() {
   local ports=""
@@ -27,19 +20,12 @@ port_arguments() {
   echo $ports
 }
 
-setup_image() {
-  local name=$1
-  mkdir -p $APPS/$name/data
-  mkdir -p $APPS/$name/logs
-}
-
 run_image() {
   local name=$1
   local ports=$(port_arguments "${@:2}")
   local id=$(docker run \
-    -v $APPS/$name/data:/data \
-    -v $APPS/$name/logs:/logs \
     -d \
+    -volumes-from ${name}_data \
     -name $name \
     $ports \
     gewo/$name)
@@ -48,8 +34,7 @@ run_image() {
 
 start_image() {
   local name=$1
-  setup_image $name
-  before_run $name
+  docker run -v /data -v /logs -name ${name}_data busybox true
   run_image $@
 }
 
@@ -67,7 +52,16 @@ start_services() {
   start_image mysql 3306
 }
 
+start_vagrant() {
+  if [ ! -z "$VAGRANT" ]; then
+    if ! $VAGRANT status | grep running; then
+      $VAGRANT up
+    fi
+  fi
+}
+
 start() {
+  start_vagrant
   start_services
 }
 
@@ -82,6 +76,11 @@ stop() {
 shell() {
   local links=$(link_arguments)
   local image="gewo/rails"
+  local mnt="$PWD"
+
+  if [ ! -z "$VAGRANT" ]; then
+    mnt="/vagrant"
+  fi
 
   if [ "$1" != "" ]; then
     image="$1"
@@ -90,7 +89,7 @@ shell() {
   local id=$(docker run \
     -d \
     -i -t \
-    -v $PWD:/mnt \
+    -v "$mnt":/mnt \
     -p 3000 \
     $links \
     $image \
@@ -100,7 +99,14 @@ shell() {
   docker attach $id
 }
 
-mkdir -p ${APPS}
+build_images() {
+  $DIR/build_images
+}
+
+usage() {
+  echo "$0 [start,stop,shell,build_images,vagrant,docker]"
+  exit 1
+}
 
 cmd="$1"
 shift
@@ -114,5 +120,17 @@ case "$cmd" in
     ;;
   shell)
     shell ${@}
+    ;;
+  build_images)
+    build_images
+    ;;
+  vagrant)
+    [ ! -z "$VAGRANT" ] && vagrant ${@}
+    ;;
+  docker)
+    docker ${@}
+    ;;
+  *)
+    usage
     ;;
 esac

@@ -1,0 +1,4 @@
+#!/bin/bash
+set -x
+mkdir -p /data/db
+/usr/bin/mongod --logappend --logpath /logs/mongo.log --smallfiles --noprealloc

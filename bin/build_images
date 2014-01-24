@@ -19,10 +19,11 @@ build_image() {
 
 build_image base
 # build_image puppet
-build_image rvm
 build_image mongodb
 build_image mysql
 build_image redis
+build_image rvm
 build_image rails-dependencies
 build_image rails
 build_image rails ruby1.9.3
+build_image rails ruby2.1.0

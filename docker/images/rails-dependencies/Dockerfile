@@ -13,8 +13,8 @@ RUN apt-get install -y libmagickwand5 libmagickwand-dev
 # ExecJS Runtime
 RUN apt-get install -y nodejs
 
-# MySQL gem dependencies
-RUN apt-get install -y libmysqlclient-dev
+# MySQL gem dependencies and client
+RUN apt-get install -y libmysqlclient-dev mysql-client
 
 # Headless Selenium Tests
 RUN apt-get install -y firefox xvfb

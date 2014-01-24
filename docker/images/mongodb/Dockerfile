@@ -10,11 +10,15 @@ RUN \
 RUN apt-get update
 RUN apt-get install -y mongodb-10gen=${VERSION}
 RUN apt-get clean
+
+ADD start_mongodb /usr/local/bin/start_mongodb
+RUN chmod 755 /usr/local/bin/start_mongodb
+
 RUN mkdir -p /data/db
 RUN mkdir -p /logs
 VOLUME ["/data"]
 VOLUME ["/logs"]
+
 EXPOSE 27017
 EXPOSE 28017
-CMD ["/usr/bin/mongod", "--logappend", "--logpath", "/logs/mongo.log", \
-  "--smallfiles", "--noprealloc"]
+CMD ["start_mongodb"]
