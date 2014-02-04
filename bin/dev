@@ -33,9 +33,17 @@ run_image() {
   echo "Started $name in container $id"
 }
 
+create_data_container() {
+  local name=$1
+  docker ps -a | grep "${name}_data" > /dev/null
+  if [ $? != 0 ]; then
+    docker run -v /data -v /logs -name ${name}_data busybox true
+  fi
+}
+
 start_image() {
   local name=$1
-  docker run -v /data -v /logs -name ${name}_data busybox true
+  create_data_container $name
   run_image $@
 }
 
@@ -74,6 +82,15 @@ stop() {
   fi
 }
 
+kill_() {
+  local containers=$(
+    docker ps -a | tail -n +2 | grep -v "_data" | awk '{ print $1 }')
+  if [ "$containers" != "" ]; then
+    docker stop $containers
+    docker rm $containers
+  fi
+}
+
 shell() {
   local links=$(link_arguments)
   local image="gewo/rails"
@@ -98,6 +115,7 @@ shell() {
   local port=$(docker port $id 3000)
   echo "port 3000 forwarded to ${port}"
   docker attach $id
+  sleep 1 && docker rm $id >/dev/null
 }
 
 build_images() {
@@ -105,7 +123,7 @@ build_images() {
 }
 
 usage() {
-  echo "$0 [start,stop,shell,build_images,vagrant,docker]"
+  echo "$0 [start,stop,kill,shell,build_images,vagrant,docker]"
   exit 1
 }
 
@@ -118,6 +136,9 @@ case "$cmd" in
     ;;
   stop)
     stop
+    ;;
+  kill)
+    kill_
     ;;
   shell)
     shell ${@}

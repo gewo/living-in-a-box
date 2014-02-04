@@ -26,4 +26,5 @@ build_image rvm
 build_image rails-dependencies
 build_image rails
 build_image rails ruby1.9.3
-build_image rails ruby2.1.0
+build_image rails ruby2.0.0
+build_image php
