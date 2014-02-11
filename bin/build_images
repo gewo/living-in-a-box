@@ -14,7 +14,7 @@ build_image() {
   fi
 
   echo "Building ${name} from ${build_dir}"
-  cd ${build_dir} && docker build -t gewo/${name} .
+  cd ${build_dir} && docker build -rm -t gewo/${name} .
 }
 
 build_image base
@@ -28,3 +28,4 @@ build_image rails
 build_image rails ruby1.9.3
 build_image rails ruby2.0.0
 build_image php
+build_image node
