@@ -26,8 +26,8 @@ run_image() {
   local ports=$(port_arguments "${@:2}")
   local id=$(docker run \
     -d \
-    -volumes-from ${name}_data \
-    -name $name \
+    -volumes-from ${USER}_${name}_data \
+    -name ${USER}_$name \
     $ports \
     gewo/$name)
   echo "Started $name in container $id"
@@ -35,9 +35,9 @@ run_image() {
 
 create_data_container() {
   local name=$1
-  docker ps -a | grep "${name}_data" > /dev/null
+  docker ps -a | grep "${USER}_${name}_data" > /dev/null
   if [ $? != 0 ]; then
-    docker run -v /data -v /logs -name ${name}_data busybox true
+    docker run -v /data -v /logs -name ${USER}_${name}_data busybox true
   fi
 }
 
@@ -50,7 +50,7 @@ start_image() {
 link_arguments() {
   local links=""
   for service in redis mongodb mysql; do
-    links+="-link $service:$service "
+    links+="-link ${USER}_$service:$service "
   done
   echo $links
 }
@@ -75,7 +75,7 @@ start() {
 }
 
 stop() {
-  local running=$(docker ps -q)
+  local running=$(docker ps | tail -n +2 | grep ${USER} | awk '{ print $1 }')
   if [ "$running" != "" ]; then
     docker stop $running
     docker rm $running
@@ -83,8 +83,8 @@ stop() {
 }
 
 kill_() {
-  local containers=$(
-    docker ps -a | tail -n +2 | grep -v "_data" | awk '{ print $1 }')
+  local containers=$(docker ps -a | tail -n +2 | grep -v "_data" | \
+    grep ${USER} | awk '{ print $1 }')
   if [ "$containers" != "" ]; then
     docker stop $containers
     docker rm $containers
