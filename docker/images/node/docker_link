@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#
+# Author: Gebhard Woestemeyer <g.woestemeyer@gmail.com>
+#
+# Map linked databases to localhost ports using socat.
+#
+# This allows us to connect to linked containers using localhost:port instead
+# of $ALIAS_PORT_1234_TCP_ADDR and thus saves us from having to configure our
+# app for the docker environment.
+
+[ -n "$DEBUG" ] && set -x
+
+echo -n 'Forwarding ports to localhost:'
+for forwardable in $(env | grep '_TCP_ADDR='); do
+  name=$(echo $forwardable | cut -d '=' -f 1)
+  ip=$(echo $forwardable | cut -d '=' -f 2)
+  port=$(echo $name | egrep -o '[0-9]+')
+
+  socat TCP4-LISTEN:$port,fork,reuseaddr TCP4:$ip:$port &
+  echo -n " $ip:$port"
+done
+echo "."
