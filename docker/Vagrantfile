@@ -58,7 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     usermod -a -G docker "$user"
 
     sed -i -e \
-      's/^[# ]*DOCKER_OPTS=.*/DOCKER_OPTS=\"-H unix:\\/\\/ -H tcp:\\/\\/\"/g' \
+      's/^[# ]*DOCKER_OPTS=.*/DOCKER_OPTS=\"-H unix:\\/\\/ -H tcp:\\/\\/0.0.0.0:4243\"/g' \
       /etc/default/docker
      service docker stop
      service docker start
