@@ -16,7 +16,8 @@ for forwardable in $(env | grep '_TCP_ADDR='); do
   ip=$(echo $forwardable | cut -d '=' -f 2)
   port=$(echo $name | egrep -o '[0-9]+')
 
-  socat TCP4-LISTEN:$port,fork,reuseaddr TCP4:$ip:$port &
+  nohup socat TCP4-LISTEN:$port,fork,reuseaddr TCP4:$ip:$port \
+    >/dev/null 2>&1 &
   echo -n " $ip:$port"
 done
 echo "."

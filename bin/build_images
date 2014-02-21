@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -e
+[ -n "$DEBUG" ] && set -x
+
 DIR="$(cd "$(dirname "$0")" && pwd)"
 IMAGE_DIR="$DIR/../docker/images"
 
@@ -17,15 +20,19 @@ build_image() {
   cd ${build_dir} && docker build -rm -t gewo/${name} .
 }
 
-build_image base
-# build_image puppet
-build_image mongodb
-build_image mysql
-build_image redis
-build_image rvm
-build_image rails-dependencies
-build_image rails
-build_image rails ruby1.9.3
-build_image rails ruby2.0.0
-build_image php
-build_image node
+if [ $# -gt 0 ]; then
+  build_image ${@}
+else
+  build_image base
+  # build_image puppet
+  build_image mongodb
+  build_image mysql
+  build_image redis
+  build_image rvm
+  build_image rails-dependencies
+  build_image rails
+  build_image rails ruby1.9.3
+  build_image rails ruby2.0.0
+  build_image php
+  build_image node
+fi

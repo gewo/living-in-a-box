@@ -48,4 +48,7 @@ RUN file="/.phpbrew/php/php-${PHP_VERSION}/lib/php/extensions/*/xdebug.so" && \
 ADD apache_config /etc/apache2/sites-available/default
 RUN a2enmod headers php5 rewrite
 
+RUN echo 'docker_link' >> /etc/bash.bashrc
+RUN echo 'cd /mnt' >> /etc/bash.bashrc
+
 CMD ["/bin/bash"]

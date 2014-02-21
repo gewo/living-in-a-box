@@ -96,6 +96,8 @@ shell() {
   local image="gewo/rails"
   local mnt="$PWD"
 
+  [ -n "$PORT" ] && local port="${PORT}:"
+
   if [ ! -z "$VAGRANT" ]; then
     mnt="/vagrant"
   fi
@@ -108,7 +110,7 @@ shell() {
     -d \
     -i -t \
     -v "$mnt":/mnt \
-    -p 3000 \
+    -p ${port}3000 \
     $links \
     $image \
     /bin/bash)
