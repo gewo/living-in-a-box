@@ -124,6 +124,14 @@ build_images() {
   $DIR/build_images
 }
 
+update() {
+  cd $DIR/.. && git pull
+  images=(base redis mysql mongodb node php rails)
+  for image in ${images[@]}; do
+    docker pull gewo/$image
+  done
+}
+
 usage() {
   echo "$0 [start,stop,kill,shell,build_images,vagrant,docker]"
   exit 1
@@ -147,6 +155,9 @@ case "$cmd" in
     ;;
   build_images)
     build_images
+    ;;
+  update)
+    update
     ;;
   vagrant)
     [ ! -z "$VAGRANT" ] && vagrant ${@}
