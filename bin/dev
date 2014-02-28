@@ -55,6 +55,14 @@ link_arguments() {
   echo $links
 }
 
+# https://gist.github.com/d11wtq/8699521
+ssh_agent_forwarding() {
+  if [ -n "$SSH_AUTH_SOCK" ]; then
+    local sock_dir=$(dirname $SSH_AUTH_SOCK)
+    echo "-v $sock_dir:$sock_dir -e SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+  fi
+}
+
 start_services() {
   start_image redis 6379
   start_image mongodb 27017 28017
@@ -111,6 +119,7 @@ shell() {
     -i -t \
     -v "$mnt":/mnt \
     -p ${port}3000 \
+    $(ssh_agent_forwarding) \
     $links \
     $image \
     /bin/bash)
