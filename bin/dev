@@ -10,7 +10,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
   export FORWARD_DOCKER_PORTS=y
   export VAGRANT_DOTFILE_PATH="$DOTDIR/.vagrant"
   export VAGRANT_VAGRANTFILE="$DIR/../docker/Vagrantfile"
-  export DOCKER_HOST=localhost
+  export DOCKER_HOST=tcp://127.0.0.1:4243
 fi
 
 port_arguments() {
