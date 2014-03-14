@@ -17,13 +17,14 @@ build_image() {
   fi
 
   echo "Building ${name} from ${build_dir}"
-  cd ${build_dir} && docker build -rm -t gewo/${name} .
+  cd ${build_dir} && docker build --rm --tag gewo/${name} .
 }
 
 if [ $# -gt 0 ]; then
   build_image ${@}
 else
   build_image base
+  build_image interactive
   # build_image puppet
   build_image mongodb
   build_image mysql

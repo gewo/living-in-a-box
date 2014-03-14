@@ -1,5 +1,5 @@
 # NodeJS (gewo/node)
-FROM gewo/base
+FROM gewo/interactive
 MAINTAINER Gebhard Wöstemeyer <g.woestemeyer@gmail.com>
 
 RUN apt-get update
@@ -11,8 +11,5 @@ RUN add-apt-repository ppa:chris-lea/node.js
 RUN apt-get update
 RUN sudo apt-get -y install nodejs && \
   apt-get clean
-
-RUN echo 'docker_link' >> /etc/bash.bashrc
-RUN echo 'cd /mnt' >> /etc/bash.bashrc
 
 CMD [/bin/bash]

@@ -16,7 +16,7 @@ fi
 port_arguments() {
   local ports=""
   for port in "$@"; do
-    ports+="-p $port "
+    ports+="--publish $port "
   done
   echo $ports
 }
@@ -25,9 +25,9 @@ run_image() {
   local name=$1
   local ports=$(port_arguments "${@:2}")
   local id=$(docker run \
-    -d \
-    -volumes-from ${USER}_${name}_data \
-    -name ${USER}_$name \
+    --detach \
+    --volumes-from ${USER}_${name}_data \
+    --name ${USER}_$name \
     $ports \
     gewo/$name)
   echo "Started $name in container $id"
@@ -50,7 +50,7 @@ start_image() {
 link_arguments() {
   local links=""
   for service in redis mongodb mysql; do
-    links+="-link ${USER}_$service:$service "
+    links+="--link ${USER}_$service:$service "
   done
   echo $links
 }
@@ -59,7 +59,18 @@ link_arguments() {
 ssh_agent_forwarding() {
   if [ -n "$SSH_AUTH_SOCK" ]; then
     local sock_dir=$(dirname $SSH_AUTH_SOCK)
-    echo "-v $sock_dir:$sock_dir -e SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+    echo "--volume $sock_dir:$sock_dir --env SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+  fi
+}
+
+dotfiles() {
+  local dotfiles="${DOTFILES:-.zsh .zshrc .bash_history .bashrc .gitconfig .rspec}"
+  local mount_args=""
+  if [ -n "$SYNC_DOTFILES" ]; then
+    for file in $dotfiles; do
+      [ -r "$HOME/$file" ] && mount_args+="--volume $HOME/$file:/$file "
+    done
+    echo $mount_args
   fi
 }
 
@@ -100,31 +111,21 @@ kill_() {
 }
 
 shell() {
-  local links=$(link_arguments)
-  local image="gewo/rails"
-  local mnt="$PWD"
-
+  [ -n "$VAGRANT" ] && local mnt="/vagrant"
   [ -n "$PORT" ] && local port="${PORT}:"
-
-  if [ ! -z "$VAGRANT" ]; then
-    mnt="/vagrant"
-  fi
-
-  if [ "$1" != "" ]; then
-    image="$1"
-  fi
+  [[ "$SHELL" =~ zsh ]] && local shell="zsh"
 
   local id=$(docker run \
-    -d \
-    -i -t \
-    -v "$mnt":/mnt \
-    -p ${port}3000 \
+    --detach \
+    --interactive --tty \
+    --volume "${mnt:-$PWD}":/mnt \
+    --publish ${port}3000 \
+    $(dotfiles) \
     $(ssh_agent_forwarding) \
-    $links \
-    $image \
-    /bin/bash)
-  local port=$(docker port $id 3000)
-  echo "port 3000 forwarded to ${port}"
+    $(link_arguments) \
+    ${1:-gewo/rails} \
+    ${shell:-bash})
+  echo "port 3000 forwarded to $(docker port $id 3000)"
   docker attach $id
   sleep 1 && docker rm $id >/dev/null
 }

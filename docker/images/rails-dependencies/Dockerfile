@@ -32,6 +32,3 @@ ENV MONGODB_VERSION 2.4.6
 RUN apt-get install -y mongodb-10gen=${MONGODB_VERSION}
 
 RUN apt-get clean
-
-RUN echo 'docker_link' >> /etc/bash.bashrc
-RUN echo 'cd /mnt' >> /etc/bash.bashrc
