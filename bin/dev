@@ -37,7 +37,7 @@ create_data_container() {
   local name=$1
   docker ps -a | grep "${USER}_${name}_data" > /dev/null
   if [ $? != 0 ]; then
-    docker run -v /data -v /logs -name ${USER}_${name}_data busybox true
+    docker run --volume /data --volume /logs --name ${USER}_${name}_data busybox true
   fi
 }
 
@@ -113,7 +113,7 @@ kill_() {
 shell() {
   [ -n "$VAGRANT" ] && local mnt="/vagrant"
   [ -n "$PORT" ] && local port="${PORT}:"
-  [[ "$SHELL" =~ zsh ]] && local shell="zsh"
+  [ -n "$SYNC_DOTFILES" ] && [[ "$SHELL" =~ zsh ]] && local shell="zsh"
 
   local id=$(docker run \
     --detach \
