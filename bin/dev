@@ -123,7 +123,7 @@ shell() {
     $(dotfiles) \
     $(ssh_agent_forwarding) \
     $(link_arguments) \
-    ${1:-gewo/rails} \
+    ${1:-gewo/ruby} \
     ${shell:-bash})
   echo "port 3000 forwarded to $(docker port $id 3000)"
   docker attach $id
@@ -136,7 +136,7 @@ build_images() {
 
 update() {
   cd $DIR/.. && git pull
-  images=(base redis mysql mongodb node php rails)
+  images=(base redis mysql mongodb node php ruby)
   for image in ${images[@]}; do
     docker pull gewo/$image
   done

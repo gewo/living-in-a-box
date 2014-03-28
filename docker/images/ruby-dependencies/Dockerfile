@@ -1,4 +1,4 @@
-# Rails Dependencies (gewo/rails-dependencies)
+# Ruby/Rails Dependencies (gewo/ruby-dependencies)
 FROM gewo/rvm
 MAINTAINER Gebhard Wöstemeyer <g.woestemeyer@gmail.com>
 
