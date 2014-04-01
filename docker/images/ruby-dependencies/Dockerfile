@@ -13,7 +13,7 @@ RUN apt-get update
 RUN apt-get install -y libyaml-dev libxml2 libxml2-dev libxslt1-dev
 
 # RMagick system dependencies
-RUN apt-get install -y libmagickwand5 libmagickwand-dev
+RUN apt-get install -y libmagickwand5 libmagickwand-dev imagemagick
 
 # ExecJS Runtime
 RUN apt-get install -y nodejs
