@@ -94,7 +94,7 @@ start() {
 }
 
 stop() {
-  local running=$(docker ps | tail -n +2 | grep ${USER} | awk '{ print $1 }')
+  local running=$(docker ps | tail -n +2 | grep ${USER}_ | awk '{ print $1 }')
   if [ "$running" != "" ]; then
     docker stop $running
     docker rm $running
@@ -120,9 +120,11 @@ shell() {
     --interactive --tty \
     --volume "${mnt:-$PWD}":/mnt \
     --publish ${port}3000 \
+    --name "${USER}_shell_$(date +%s)${RANDOM}" \
     $(dotfiles) \
     $(ssh_agent_forwarding) \
     $(link_arguments) \
+    $EXTRA_ARGS \
     ${1:-gewo/ruby} \
     ${shell:-bash})
   echo "port 3000 forwarded to $(docker port $id 3000)"
