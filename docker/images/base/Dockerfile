@@ -13,8 +13,5 @@ RUN \
   apt-get clean
 RUN locale-gen en_US.UTF-8
 
-ADD docker_link /usr/local/bin/docker_link
-RUN chmod 755 /usr/local/bin/docker_link
-
 ENV LANG en_US.UTF-8
 ENV HOME /
