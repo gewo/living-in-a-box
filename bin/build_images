@@ -4,7 +4,7 @@ set -e
 [ -n "$DEBUG" ] && set -x
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-IMAGE_DIR="$DIR/../docker/images"
+IMAGE_DIR="$DIR/../docker_images"
 
 build_image() {
   local name="$1"
