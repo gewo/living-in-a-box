@@ -5,7 +5,7 @@ MAINTAINER Gebhard Wöstemeyer <g.woestemeyer@gmail.com>
 ENV PHP_VERSION 5.4.24
 
 # 1.13.1/current master broken: https://github.com/c9s/phpbrew/issues/214
-ENV PHPBREW_VERSION 1.13.0
+ENV PHPBREW_VERSION master
 
 RUN echo 'deb-src http://archive.ubuntu.com/ubuntu quantal main universe multiverse' >> /etc/apt/sources.list
 RUN apt-get update
@@ -29,7 +29,7 @@ RUN apt-get -y install curl git \
 # remove original LoadModule line from Apache config. phpbrew will add it again.
 RUN sed -i -e '/^LoadModule php5/d' /etc/apache2/mods-available/php5.load
 
-RUN curl https://raw.github.com/c9s/phpbrew/${PHPBREW_VERSION}/phpbrew > /usr/bin/phpbrew \
+RUN curl -L https://raw.github.com/c9s/phpbrew/${PHPBREW_VERSION}/phpbrew > /usr/bin/phpbrew \
   && chmod +x /usr/bin/phpbrew
 
 RUN phpbrew init && echo 'source /.phpbrew/bashrc' >> /etc/shell_env
