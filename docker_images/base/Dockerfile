@@ -1,5 +1,5 @@
 # Base Image (gewo/base)
-FROM ubuntu:12.10
+FROM ubuntu:14.04
 MAINTAINER Gebhard Wöstemeyer <g.woestemeyer@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
