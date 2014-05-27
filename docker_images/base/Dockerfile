@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN \
   apt-get update && \
+  apt-get upgrade -y && \
   apt-get install -y wget build-essential socat && \
   apt-get clean
 RUN locale-gen en_US.UTF-8

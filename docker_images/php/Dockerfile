@@ -22,7 +22,7 @@ RUN apt-get -y install curl git \
   re2c libxml2 libxml2-dev php5-cli bison libbz2-dev libreadline-dev \
   libfreetype6-dev libpng12-0 libpng12-dev libjpeg-dev libjpeg8-dev libjpeg8 \
   libxpm4 libssl-dev openssl gettext libgettextpo-dev libcurl4-gnutls-dev \
-  libgettextpo0 libicu48 libicu-dev libmhash-dev libmhash2 libmcrypt-dev \
+  libgettextpo0 libicu-dev libmhash-dev libmhash2 libmcrypt-dev \
   libmcrypt4 libfreetype6  \
   && apt-get clean
 
