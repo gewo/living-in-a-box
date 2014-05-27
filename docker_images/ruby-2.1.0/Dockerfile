@@ -7,6 +7,4 @@ ENV APP_RUBY_VERSION 2.1.0
 RUN ln -sf /proc/self/fd /dev/fd && \
   rvm install ruby-${APP_RUBY_VERSION} --default
 
-RUN rvm-shell -c "gem install bundler"
-
 CMD ["/bin/bash"]

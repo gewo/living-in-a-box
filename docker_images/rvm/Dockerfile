@@ -10,4 +10,5 @@ RUN echo "gem: --no-ri --no-rdoc" > ~/.gemrc
 RUN echo "export rvm_trust_rvmrcs_flag=1" >> ~/.rvmrc
 ENV PATH /usr/local/rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN curl -L https://get.rvm.io | bash -s stable && rvm requirements
+RUN echo 'bundler' >> /usr/local/rvm/gemsets/global.gems
 CMD ["/bin/bash"]
