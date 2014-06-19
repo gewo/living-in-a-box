@@ -64,7 +64,7 @@ ssh_agent_forwarding() {
 }
 
 dotfiles() {
-  local dotfiles="${DOTFILES:-.zsh .zshrc .bash_history .bashrc .gitconfig .rspec}"
+  local dotfiles="${DOTFILES:-.zsh .zshrc .bash_history .bashrc .gitconfig .rspec .pry_history}"
   local mount_args=""
   if [ -n "$SYNC_DOTFILES" ]; then
     for file in $dotfiles; do
