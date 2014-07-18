@@ -74,6 +74,26 @@ dotfiles() {
   fi
 }
 
+guess_ruby_version() {
+  local ruby_version=$RUBY_VERSION
+  [ -z "$ruby_version" ] && \
+    ruby_version=$(grep '^ruby[\t ]' Gemfile 2>/dev/null | awk '{ print $2 }' | xargs)
+  ruby_version=${ruby_version:-latest}
+  echo $ruby_version
+}
+
+ruby_image() {
+  echo "gewo/ruby:$(guess_ruby_version)"
+}
+
+shell_image() {
+  local image=$1
+  if [ -z "$image" ]; then
+    image=$(ruby_image)
+  fi
+  echo $image
+}
+
 start_services() {
   start_image redis 6379
   start_image mongodb 27017 28017
@@ -114,6 +134,7 @@ shell() {
   [ -n "$VAGRANT" ] && local mnt="/vagrant"
   [ -n "$PORT" ] && local port="${PORT}:"
   [ -n "$SYNC_DOTFILES" ] && [[ "$SHELL" =~ zsh ]] && local shell="zsh"
+  local image=$(ruby_image)
 
   local id=$(docker run \
     --detach \
@@ -125,7 +146,7 @@ shell() {
     $(ssh_agent_forwarding) \
     $(link_arguments) \
     $EXTRA_ARGS \
-    ${1:-gewo/ruby} \
+    $(shell_image $1) \
     ${shell:-bash})
   echo "port 3000 forwarded to $(docker port $id 3000)"
   docker attach $id
