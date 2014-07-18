@@ -7,13 +7,7 @@ RUN \
   apt-get install -y mysql-server-5.5 && \
   apt-get clean
 
-RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" \
-  /etc/mysql/my.cnf
-RUN sed -i -e"s/^log_error\s*=.*$/log_error = \/logs\/mysql.log/" \
-  /etc/mysql/my.cnf
-RUN sed -i -e"s/^datadir\s*=.*$/datadir = \/data/" \
-  /etc/mysql/my.cnf
-
+ADD my.cnf /etc/mysql/my.cnf
 ADD start_mysqld /usr/local/bin/start_mysqld
 RUN chmod 755 /usr/local/bin/start_mysqld
 
