@@ -31,4 +31,7 @@ RUN apt-get install -y openjdk-7-jre-headless
 ENV MONGODB_VERSION 2.4.6
 RUN apt-get install -y mongodb-10gen=${MONGODB_VERSION}
 
+# Redis Client
+RUN apt-get install -y redis-tools
+
 RUN apt-get clean
