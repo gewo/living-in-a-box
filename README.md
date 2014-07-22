@@ -143,14 +143,14 @@ redis_version:2.6.15
 $
 ```
 
-### RUBY_VERSION
+### RUBY_VER
 
 Per default dev shell uses the gewo/ruby image.  Some guessing is done
 to automatically find out the correct version of ruby from your Gemfile.
 Sometimes you want to specify the version manually:
 
 ```sh
-$ RUBY_VERSION=1.9.3 dev shell
+$ RUBY_VER=1.9.3 dev shell
 docker$ ruby -v
 ruby 1.9.3p392 (2013-02-22 revision 39386) [x86_64-linux]
 docker$

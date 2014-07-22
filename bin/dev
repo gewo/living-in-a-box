@@ -75,7 +75,7 @@ dotfiles() {
 }
 
 guess_ruby_version() {
-  local ruby_version=$RUBY_VERSION
+  local ruby_version=$RUBY_VER
   [ -z "$ruby_version" ] && \
     ruby_version=$(grep '^ruby[\t ]' Gemfile 2>/dev/null | awk '{ print $2 }' | xargs)
   ruby_version=${ruby_version:-latest}
