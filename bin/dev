@@ -87,7 +87,7 @@ ruby_image() {
 }
 
 shell_image() {
-  local image=$1
+  local image=$IMAGE
   if [ -z "$image" ]; then
     image=$(ruby_image)
   fi
@@ -101,19 +101,43 @@ start_services() {
 }
 
 start_vagrant() {
-  if [ ! -z "$VAGRANT" ]; then
+  if [ -n "$VAGRANT" ]; then
     if ! $VAGRANT status | grep running; then
       $VAGRANT up
     fi
   fi
 }
 
-start() {
+common_run_args() {
+  [ -n "$VAGRANT" ] && local mnt="/vagrant"
+  [ -n "$PORT" ] && local port="${PORT}:"
+  [ -n "$SYNC_DOTFILES" ] && [[ "$SHELL" =~ zsh ]] && local shell="zsh"
+  if [ -n "$*" ]; then
+    local cmd="$@"
+  else
+    local cmd=${shell:-bash}
+  fi
+
+  echo \
+    --interactive \
+    --tty \
+    --volume "${mnt:-$PWD}":/mnt \
+    --publish ${port}3000 \
+    --name "${USER}_shell_$(date +%s)${RANDOM}" \
+    $(dotfiles) \
+    $(ssh_agent_forwarding) \
+    $(link_arguments) \
+    $EXTRA_ARGS \
+    $(shell_image) \
+    $cmd
+}
+
+cmd_start() {
   start_vagrant
   start_services
 }
 
-stop() {
+cmd_stop() {
   local running=$(docker ps | tail -n +2 | grep ${USER}_ | awk '{ print $1 }')
   if [ "$running" != "" ]; then
     docker stop $running
@@ -121,7 +145,7 @@ stop() {
   fi
 }
 
-kill_() {
+cmd_kill() {
   local containers=$(docker ps -a | tail -n +2 | grep -v "_data" | \
     grep ${USER} | awk '{ print $1 }')
   if [ "$containers" != "" ]; then
@@ -130,34 +154,23 @@ kill_() {
   fi
 }
 
-shell() {
-  [ -n "$VAGRANT" ] && local mnt="/vagrant"
-  [ -n "$PORT" ] && local port="${PORT}:"
-  [ -n "$SYNC_DOTFILES" ] && [[ "$SHELL" =~ zsh ]] && local shell="zsh"
-  local image=$(ruby_image)
-
-  local id=$(docker run \
-    --detach \
-    --interactive --tty \
-    --volume "${mnt:-$PWD}":/mnt \
-    --publish ${port}3000 \
-    --name "${USER}_shell_$(date +%s)${RANDOM}" \
-    $(dotfiles) \
-    $(ssh_agent_forwarding) \
-    $(link_arguments) \
-    $EXTRA_ARGS \
-    $(shell_image $1) \
-    ${shell:-bash})
+cmd_shell() {
+  [ -n "$1" ] && IMAGE=$1
+  local id=$(docker run --detach $(common_run_args))
   echo "port 3000 forwarded to $(docker port $id 3000)"
   docker attach $id
   sleep 1 && docker rm $id >/dev/null
 }
 
-build_images() {
+cmd_run() {
+  docker run --rm $(common_run_args "$*")
+}
+
+cmd_build_images() {
   $DIR/build_images
 }
 
-update() {
+cmd_update() {
   cd $DIR/.. && git pull
   images=(base redis mysql mongodb node php ruby)
   for image in ${images[@]}; do
@@ -165,40 +178,31 @@ update() {
   done
 }
 
-usage() {
-  echo "$0 [start,stop,kill,shell,build_images,vagrant,docker]"
+cmd_vagrant() {
+  [ ! -z "$VAGRANT" ] && vagrant ${@}
+}
+
+cmd_docker() {
+  docker ${@}
+}
+
+cmd_help() {
+  echo "$0 [start,stop,kill,shell,run,build_images,vagrant,docker,help]"
   exit 1
 }
 
-cmd="$1"
-shift
+fn_exists() {
+  declare -f $1 > /dev/null
+  return $?
+}
 
-case "$cmd" in
-  start)
-    start
-    ;;
-  stop)
-    stop
-    ;;
-  kill)
-    kill_
-    ;;
-  shell)
-    shell ${@}
-    ;;
-  build_images)
-    build_images
-    ;;
-  update)
-    update
-    ;;
-  vagrant)
-    [ ! -z "$VAGRANT" ] && vagrant ${@}
-    ;;
-  docker)
-    docker ${@}
-    ;;
-  *)
-    usage
-    ;;
-esac
+if [ "$BASH_SOURCE" = "$0" ]; then
+  cmd="$1"
+  shift
+
+  if fn_exists cmd_$cmd; then
+    cmd_$cmd "$@"
+  else
+    cmd_help
+  fi
+fi
