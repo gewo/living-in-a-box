@@ -156,6 +156,27 @@ ruby 1.9.3p392 (2013-02-22 revision 39386) [x86_64-linux]
 docker$
 ```
 
+### IMAGE
+
+The docker image. `IMAGE` by default is the latest ruby image.
+
+```sh
+$ IMAGE=gewo/ruby:1.9.3 dev shell
+docker$ ruby -v
+ruby 1.9.3p392 (2013-02-22 revision 39386) [x86_64-linux]
+docker$
+```
+
+### {MONGODB,REDIS,MYSQL}\_VER
+
+Set version of background services on `dev start`
+
+```sh
+$ # Run the mongodb server with image gewo/mongodb:2.4.10. Other images
+$ # use :latest per default.
+$ MONGODB_VER=2.4.10 dev start
+```
+
 ## Commands
 
 ### shell

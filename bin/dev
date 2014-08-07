@@ -21,6 +21,13 @@ port_arguments() {
   echo $ports
 }
 
+image_tag() {
+  local name=$(echo $1 | tr '[:lower:]' '[:upper:]')
+  local tag_var=${name}_VER
+  local tag=${!tag_var}
+  echo ${tag:-latest}
+}
+
 run_image() {
   local name=$1
   local ports=$(port_arguments "${@:2}")
@@ -29,7 +36,7 @@ run_image() {
     --volumes-from ${USER}_${name}_data \
     --name ${USER}_$name \
     $ports \
-    gewo/$name)
+    gewo/$name:$(image_tag $name))
   echo "Started $name in container $id"
 }
 
