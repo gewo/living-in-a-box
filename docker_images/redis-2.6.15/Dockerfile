@@ -9,10 +9,4 @@ RUN tar xvfz redis-${VERSION}.tar.gz
 RUN cd redis-${VERSION} && make redis-server
 RUN mv redis-${VERSION}/src/redis-server /usr/bin && rm -rf redis-${VERSION}*
 
-RUN mkdir /data
-RUN mkdir /logs
-VOLUME ["/data"]
-VOLUME ["/logs"]
-ADD redis.conf redis.conf
-EXPOSE 6379
 CMD ["/usr/bin/redis-server", "redis.conf"]
