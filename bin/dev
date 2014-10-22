@@ -3,14 +3,13 @@
 [ ! -z "$DEBUG" ] && set -x
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-DOTDIR="$HOME/.living-in-a-box"
 
 if [[ "$OSTYPE" == darwin* ]]; then
-  VAGRANT="vagrant"
-  export FORWARD_DOCKER_PORTS=y
-  export VAGRANT_DOTFILE_PATH="$DOTDIR/.vagrant"
-  export VAGRANT_VAGRANTFILE="$DIR/../Vagrantfile"
-  export DOCKER_HOST=tcp://127.0.0.1:4243
+  OSX="yes"
+  boot2docker_shellinit=$(boot2docker shellinit 2>/dev/null)
+  if [ $? = 0 ]; then
+    eval $boot2docker_shellinit
+  fi
 fi
 
 port_arguments() {
@@ -28,15 +27,25 @@ image_tag() {
   echo ${tag:-latest}
 }
 
+pull_image() {
+  regexp="^$(echo $1 | sed -e 's/:/\\s*/')" # /^gewo/mongodb\s*latest/
+  if ! docker images | grep "$regexp" >/dev/null; then
+    docker pull $1
+  fi
+}
+
 run_image() {
   local name=$1
   local ports=$(port_arguments "${@:2}")
+  local image="gewo/$name"
+  local tag=$(image_tag $name)
+  pull_image ${image}:${tag}
   local id=$(docker run \
     --detach \
     --volumes-from ${USER}_${name}_data \
     --name ${USER}_$name \
     $ports \
-    gewo/$name:$(image_tag $name))
+    ${image}:${tag})
   echo "Started $name in container $id"
 }
 
@@ -107,16 +116,7 @@ start_services() {
   start_image mysql 3306
 }
 
-start_vagrant() {
-  if [ -n "$VAGRANT" ]; then
-    if ! $VAGRANT status | grep running; then
-      $VAGRANT up
-    fi
-  fi
-}
-
 common_run_args() {
-  [ -n "$VAGRANT" ] && local mnt="/vagrant"
   [ -n "$PORT" ] && local port="${PORT}:"
   [ -n "$SYNC_DOTFILES" ] && [[ "$SHELL" =~ zsh ]] && local shell="zsh"
   if [ -n "$*" ]; then
@@ -128,7 +128,7 @@ common_run_args() {
   echo \
     --interactive \
     --tty \
-    --volume "${mnt:-$PWD}":/mnt \
+    --volume "$PWD":/mnt \
     --publish ${port}3000 \
     --name "${USER}_shell_$(date +%s)${RANDOM}" \
     $(dotfiles) \
@@ -139,8 +139,21 @@ common_run_args() {
     $cmd
 }
 
+setup_osx() {
+  if [ -n "$OSX" ]; then
+    status=$(boot2docker status 2>/dev/null)
+    if [ $? != 0 ]; then
+      boot2docker init
+    fi
+    if [ "$status" != "running" ]; then
+      boot2docker start
+    fi
+    eval $(boot2docker shellinit 2>/dev/null)
+  fi
+}
+
 cmd_start() {
-  start_vagrant
+  setup_osx
   start_services
 }
 
@@ -163,6 +176,7 @@ cmd_kill() {
 
 cmd_shell() {
   [ -n "$1" ] && IMAGE=$1
+  pull_image $(shell_image)
   local id=$(docker run --detach $(common_run_args))
   echo "port 3000 forwarded to $(docker port $id 3000)"
   docker attach $id
@@ -193,8 +207,15 @@ cmd_docker() {
   docker ${@}
 }
 
+cmd_boot2docker() {
+  boot2docker ${@}
+}
+
 cmd_help() {
-  echo "$0 [start,stop,kill,shell,run,build_images,vagrant,docker,help]"
+  cat <<EOF
+Usage: $(basename $0) [start,stop,kill,shell,run,build_images,vagrant,docker,boot2docker,help]
+Please visit http://github.com/gewo/living-in-a-box/ for help.
+EOF
   exit 1
 }
 

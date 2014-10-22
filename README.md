@@ -9,6 +9,7 @@ daemon.
 
 * [Docker](http://www.docker.io/)
 * [Vagrant](http://vagrantup.com/) (only on OSX)
+* [boot2docker](http://boot2docker.io) (only on OSX)
 
 ### Install on OSX (using [Homebrew](http://brew.sh))
 
@@ -19,10 +20,8 @@ brew tap phinze/homebrew-cask
 brew install brew-cask
 brew cask install virtualbox
 brew cask install vagrant
-
-# Install the native docker OSX client
-brew tap homebrew/binary
-brew install docker # yeah, go go go
+brew cask install boot2docker
+brew install docker
 ```
 
 ### Install on Linux (Tested on [Ubuntu](http://www.ubuntu.com/))
