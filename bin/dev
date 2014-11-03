@@ -2,7 +2,7 @@
 
 [ ! -z "$DEBUG" ] && set -x
 
-DIR="$(cd "$(dirname "$0")" && pwd)"
+DIR="$(dirname $([ -L $0 ] && readlink -f $0 || echo $0))"
 
 if [[ "$OSTYPE" == darwin* ]]; then
   OSX="yes"
