@@ -32,6 +32,8 @@ else
   build_image mongodb 2.6.4
   build_image mongodb
   build_image mysql
+  build_image redis-base
+  build_image redis 2.6.15
   build_image redis
   build_image rvm
   build_image ruby-dependencies
