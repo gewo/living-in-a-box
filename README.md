@@ -2,13 +2,12 @@
 
 A development environment for Rails applications using docker.
 
-It runs native on Linux, on Mac OS X Vagrant is used for the docker
-daemon.
+Tested on Linux and Mac OS X.
 
 ## Requirements
 
 * [Docker](http://www.docker.io/)
-* [Vagrant](http://vagrantup.com/) (only on OSX)
+* [VirtualBox](https://www.virtualbox.org//) (only on OSX)
 * [boot2docker](http://boot2docker.io) (only on OSX)
 
 ### Install on OSX (using [Homebrew](http://brew.sh))
@@ -19,12 +18,11 @@ Musophobia? Read on:
 brew tap phinze/homebrew-cask
 brew install brew-cask
 brew cask install virtualbox
-brew cask install vagrant
 brew cask install boot2docker
 brew install docker
 ```
 
-### Install on Linux (Tested on [Ubuntu](http://www.ubuntu.com/))
+### Install on Linux (Tested on [Ubuntu](http://www.ubuntu.com/) and [Fedora](http://fedoraproject.org/)
 
 ```sh
 # Install docker
@@ -39,6 +37,10 @@ git clone https://github.com/gewo/living-in-a-box.git $HOME/.living-in-a-box
 export PATH="~/.living-in-a-box/bin:$PATH" # you want to make this permanent
 ```
 
+## Docker images
+
+![Docker image dependencies](https://github.com/gewo/living-in-a-box/raw/master/dependencies.png "Docker image dependencies")
+
 ## Get started
 
 First you want to start the background services, that is:
@@ -47,14 +49,10 @@ First you want to start the background services, that is:
 * mongodb
 * mysql
 
-On OSX a VirtualBox VM will be started for the docker daemon, which is
+On OSX a the boot2docker VM will be started for the docker daemon, which is
 not available on OSX.
 
 ```sh
-# On OSX the vagrant folder that will be shared with the host (and thus
-# accessable from within docker) is your current folder.
-cd /path/to/project
-
 # Start it up. On the first run it will pull all the necessary images
 # from the docker registry.
 dev start

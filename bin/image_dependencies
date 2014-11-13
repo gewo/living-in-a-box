@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+diagram_content=$(
+  cd docker_images &&
+  ls */Dockerfile | grep -v '[0-9]'| xargs grep FROM |\
+  cut -d'/' -f1,3 |\
+  sed -e 's/^base$/base\/ubuntu/' |\
+  sed -e 's/\(.*\)\/\(.*\)/[\1{bg:linen}]->[\2{bg:linen}],/' | xargs)
+
+docker run --rm gewo/scruffy \
+  --png --font-family Purisa --scruffy "$diagram_content" > dependencies.png
