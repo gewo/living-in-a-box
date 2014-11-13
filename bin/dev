@@ -199,10 +199,6 @@ cmd_update() {
   done
 }
 
-cmd_vagrant() {
-  [ ! -z "$VAGRANT" ] && vagrant ${@}
-}
-
 cmd_docker() {
   docker ${@}
 }
@@ -213,7 +209,7 @@ cmd_boot2docker() {
 
 cmd_help() {
   cat <<EOF
-Usage: $(basename $0) [start,stop,kill,shell,run,build_images,vagrant,docker,boot2docker,help]
+Usage: $(basename $0) [start,stop,kill,shell,run,build_images,docker,boot2docker,help]
 Please visit http://github.com/gewo/living-in-a-box/ for help.
 EOF
   exit 1
