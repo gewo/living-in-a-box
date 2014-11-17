@@ -48,4 +48,5 @@ else
   build_image node
   build_iamge python
   build_image firefox-addon-sdk
+  build_image ngr
 fi
