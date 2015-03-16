@@ -46,6 +46,7 @@ else
   build_image ruby 2.1.4
   build_image ruby 2.1.5
   build_image ruby 2.2.0
+  build_image ruby 2.2.1
   build_image ruby
   build_image php
   build_image node
