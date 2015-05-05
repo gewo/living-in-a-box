@@ -29,7 +29,8 @@ else
   build_image mongodb-base
   build_image mongodb 2.4.6
   build_image mongodb 2.4.10
-  build_image mongodb 2.6.4
+  build_image mongodb 2.6.3
+  build_image mongodb 2.6.9
   build_image mongodb 3.0.1
   build_image mongodb
   build_image mysql
