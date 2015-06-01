@@ -7,7 +7,7 @@ ENV PHP_VERSION 5.4.24
 # 1.13.1/current master broken: https://github.com/c9s/phpbrew/issues/214
 ENV PHPBREW_VERSION master
 
-RUN echo 'deb-src http://archive.ubuntu.com/ubuntu quantal main universe multiverse' >> /etc/apt/sources.list
+RUN echo 'deb-src http://archive.ubuntu.com/ubuntu trusty main universe multiverse' >> /etc/apt/sources.list
 RUN apt-get update
 RUN apt-get -y install software-properties-common
 RUN add-apt-repository ppa:chris-lea/node.js

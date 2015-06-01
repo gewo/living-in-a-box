@@ -31,6 +31,7 @@ else
   build_image mongodb 2.4.10
   build_image mongodb 2.6.3
   build_image mongodb 2.6.9
+  build_image mongodb 2.6.10
   build_image mongodb 3.0.1
   build_image mongodb
   build_image mysql
@@ -49,10 +50,11 @@ else
   build_image ruby 2.1.5
   build_image ruby 2.2.0
   build_image ruby 2.2.1
+  build_image ruby 2.2.2
   build_image ruby
   build_image php
   build_image node
-  build_iamge python
+  build_image python
   build_image ansible
   build_image firefox-addon-sdk
   build_image ngr
