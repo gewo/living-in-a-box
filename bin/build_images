@@ -53,6 +53,7 @@ else
   build_image ruby 2.2.2
   build_image ruby
   build_image php
+  build_image node 0.12.4
   build_image node
   build_image python
   build_image ansible
