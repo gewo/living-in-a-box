@@ -55,6 +55,8 @@ else
   build_image php
   build_image node 0.12.4
   build_image node
+  build_images iojs 2.2.1
+  build_images iojs
   build_image python
   build_image ansible
   build_image firefox-addon-sdk
