@@ -39,7 +39,7 @@ image_tag() {
 }
 
 pull_image() {
-  regexp="^$(echo $1 | sed -e 's/:/\\s*/')" # /^gewo/mongodb\s*latest/
+  regexp="$(echo $1 | sed -e 's/:/\\s*/')" # /gewo/mongodb\s*latest/
   if ! docker images | grep "$regexp" >/dev/null; then
     docker pull $1
   fi
