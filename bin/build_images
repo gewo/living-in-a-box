@@ -32,6 +32,7 @@ else
   build_image mongodb 2.6.3
   build_image mongodb 2.6.9
   build_image mongodb 2.6.10
+  build_image mongodb 2.6.11
   build_image mongodb 3.0.1
   build_image mongodb 3.0.5
   build_image mongodb 3.0.5_tiger
