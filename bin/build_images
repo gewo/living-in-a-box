@@ -5,6 +5,7 @@ set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 IMAGE_DIR="$DIR/../docker_images"
+DOCKER_BUILD_ARGS=${DOCKER_BUILD_ARGS:- --rm} # --no-cache
 
 build_image() {
   local name="$1"
@@ -17,7 +18,7 @@ build_image() {
   fi
 
   echo "Building ${name} from ${build_dir}"
-  cd ${build_dir} && docker build --rm --tag gewo/${name} .
+  cd ${build_dir} && docker build ${DOCKER_BUILD_ARGS} --tag gewo/${name} .
 }
 
 if [ $# -gt 0 ]; then

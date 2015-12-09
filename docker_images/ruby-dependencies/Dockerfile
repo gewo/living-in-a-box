@@ -34,4 +34,7 @@ RUN apt-get install -y mongodb-10gen=${MONGODB_VERSION}
 # Redis Client
 RUN apt-get install -y redis-tools
 
+# Postgres Client and libs
+RUN apt-get install -y libgmp10-dev libpq-dev postgresql-client
+
 RUN apt-get clean
