@@ -2,4 +2,4 @@
 set -x
 mkdir -p /data/db
 # /usr/bin/mongod --logappend --logpath /logs/mongo.log --smallfiles --noprealloc
-/usr/bin/mongod --smallfiles --noprealloc --profile=1 --slowms=1 -vv
+/usr/bin/mongod --smallfiles --noprealloc --profile=1 --slowms=1 --storageEngine=wiredTiger -vv

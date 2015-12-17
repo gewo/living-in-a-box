@@ -5,6 +5,7 @@ set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 IMAGE_DIR="$DIR/../docker_images"
+DOCKER_BUILD_ARGS=${DOCKER_BUILD_ARGS:- --rm} # --no-cache
 
 build_image() {
   local name="$1"
@@ -17,7 +18,7 @@ build_image() {
   fi
 
   echo "Building ${name} from ${build_dir}"
-  cd ${build_dir} && docker build --rm --tag gewo/${name} .
+  cd ${build_dir} && docker build ${DOCKER_BUILD_ARGS} --tag gewo/${name} .
 }
 
 if [ $# -gt 0 ]; then
@@ -29,7 +30,13 @@ else
   build_image mongodb-base
   build_image mongodb 2.4.6
   build_image mongodb 2.4.10
-  build_image mongodb 2.6.4
+  build_image mongodb 2.6.3
+  build_image mongodb 2.6.9
+  build_image mongodb 2.6.10
+  build_image mongodb 2.6.11
+  build_image mongodb 3.0.1
+  build_image mongodb 3.0.5
+  build_image mongodb 3.0.5_tiger
   build_image mongodb
   build_image mysql
   build_image redis-base
@@ -45,10 +52,18 @@ else
   build_image ruby 2.1.3
   build_image ruby 2.1.4
   build_image ruby 2.1.5
+  build_image ruby 2.2.0
+  build_image ruby 2.2.1
+  build_image ruby 2.2.2
+  build_image ruby 2.2.3
   build_image ruby
   build_image php
+  build_image node 0.12.4
   build_image node
-  build_iamge python
+  build_images iojs 2.2.1
+  build_images iojs
+  build_image python
+  build_image ansible
   build_image firefox-addon-sdk
   build_image ngr
 fi
