@@ -34,4 +34,7 @@ RUN apt-get install -y mongodb-10gen=${MONGODB_VERSION}
 # Redis Client
 RUN apt-get install -y redis-tools
 
+# Unzip
+RUN apt-get install -y unzip
+
 RUN apt-get clean
