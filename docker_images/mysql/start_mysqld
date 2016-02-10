@@ -4,6 +4,7 @@ set -x
 
 if [ ! -e /data/ibdata1 ]; then
   mysql_install_db
+  chown mysql:mysql /data
   mysqld_safe &
   sleep 20
   mysql -e "GRANT ALL ON *.* to 'root'@'%'; FLUSH PRIVILEGES"
