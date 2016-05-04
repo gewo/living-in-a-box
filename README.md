@@ -14,28 +14,22 @@ Tested on Linux and Mac OS X.
 
 Musophobia? Read on:
 
-```sh
-brew tap phinze/homebrew-cask
-brew install brew-cask
-brew cask install virtualbox
-brew cask install boot2docker
-brew install docker
-```
+    brew tap phinze/homebrew-cask
+    brew install brew-cask
+    brew cask install virtualbox
+    brew cask install boot2docker
+    brew install docker
 
 ### Install on Linux (Tested on [Ubuntu](http://www.ubuntu.com/) and [Fedora](http://fedoraproject.org/)
 
-```sh
-# Install docker
-curl -sL https://get.docker.io/ | sudo sh
-sudo adduser $USER docker
-```
+    # Install docker
+    curl -sL https://get.docker.io/ | sudo sh
+    sudo adduser $USER docker
 
 ## Install living-in-a-box
 
-```sh
-git clone https://github.com/gewo/living-in-a-box.git $HOME/.living-in-a-box
-export PATH="~/.living-in-a-box/bin:$PATH" # you want to make this permanent
-```
+    git clone https://github.com/gewo/living-in-a-box.git $HOME/.living-in-a-box
+    export PATH="~/.living-in-a-box/bin:$PATH" # you want to make this permanent
 
 ## Docker images
 
@@ -52,19 +46,15 @@ First you want to start the background services, that is:
 On OSX a the boot2docker VM will be started for the docker daemon, which is
 not available on OSX.
 
-```sh
-# Start it up. On the first run it will pull all the necessary images
-# from the docker registry.
-dev start
-```
+    # Start it up. On the first run it will pull all the necessary images
+    # from the docker registry.
+    dev start
 
 ## Start developing
 
 From your project folder just run:
 
-```sh
-dev shell
-```
+    dev shell
 
 This will open a bash shell inside the docker container with the
 background services linked to it. The `/mnt`-folder inside the container
@@ -72,16 +62,14 @@ is synced to your current path.
 
 An example:
 
-```sh
-$ cd /path/to/project
-$ dev shell
-docker$ cd /mnt # equals /path/to/project on the host
-docker$ bundle install
-docker$ bundle exec rake db:create db:schema:load db:migrate db:seed
-docker$ bundle exec rails server
-docker$ exit
-$
-```
+    $ cd /path/to/project
+    $ dev shell
+    docker$ cd /mnt # equals /path/to/project on the host
+    docker$ bundle install
+    docker$ bundle exec rake db:create db:schema:load db:migrate db:seed
+    docker$ bundle exec rails server
+    docker$ exit
+    $
 
 Data in the background-services will be persisted in
 [Data Volumes](http://docs.docker.io/en/latest/use/working_with_volumes/).
@@ -94,10 +82,8 @@ Normally the containers port is mapped to a random port on your host
 machine. You can specify the `PORT` environment variable to use a fixed
 one:
 
-```sh
-$ dev shell             # port 3000 forwarded to 0.0.0.0:49157
-$ PORT=3456 dev shell   # port 3000 forwarded to 0.0.0.0:3456
-```
+    $ dev shell             # port 3000 forwarded to 0.0.0.0:49157
+    $ PORT=3456 dev shell   # port 3000 forwarded to 0.0.0.0:3456
 
 ### SYNC_DOTFILES
 
@@ -109,36 +95,30 @@ When you want to specify custom files that should be synced into your
 containers home directory you can set the `DOTFILES` environment
 variable.
 
-```sh
-$ SYNC_DOTFILES=1 dev shell                    # sync default dotfiles
-$ SYNC_DOTFILES=1 DOTFILES=".ctags" dev shell  # sync your `~/.ctags`
-```
+    $ SYNC_DOTFILES=1 dev shell                    # sync default dotfiles
+    $ SYNC_DOTFILES=1 DOTFILES=".ctags" dev shell  # sync your `~/.ctags`
 
 ### SHELL
 
 Set the shell to use in your container.
 
-```sh
-$ SHELL=fish dev shell
-docker <><
-```
+    $ SHELL=fish dev shell
+    docker <><
 
 ### EXTRA_ARGS
 
 Sometimes you may want to pass additional arguments to the `docker run`
-command. 
+command.
 
 Lets say you want to forward the Redis port to your local system:
 
-```sh
-$ EXTRA_ARGS="--publish 127.0.0.1:9736:6379" dev shell
-docker$
+    $ EXTRA_ARGS="--publish 127.0.0.1:9736:6379" dev shell
+    docker$
 
-# another shell on your host
-$ redis-cli -p 9736 INFO | grep redis_version
-redis_version:2.6.15
-$
-```
+    # another shell on your host
+    $ redis-cli -p 9736 INFO | grep redis_version
+    redis_version:2.6.15
+    $
 
 ### RUBY_VER
 
@@ -146,52 +126,42 @@ Per default dev shell uses the gewo/ruby image.  Some guessing is done
 to automatically find out the correct version of ruby from your Gemfile.
 Sometimes you want to specify the version manually:
 
-```sh
-$ RUBY_VER=1.9.3 dev shell
-docker$ ruby -v
-ruby 1.9.3p392 (2013-02-22 revision 39386) [x86_64-linux]
-docker$
-```
+    $ RUBY_VER=1.9.3 dev shell
+    docker$ ruby -v
+    ruby 1.9.3p392 (2013-02-22 revision 39386) [x86_64-linux]
+    docker$
 
 ### IMAGE
 
 The docker image. `IMAGE` by default is the latest ruby image.
 
-```sh
-$ IMAGE=gewo/ruby:1.9.3 dev shell
-docker$ ruby -v
-ruby 1.9.3p392 (2013-02-22 revision 39386) [x86_64-linux]
-docker$
-```
+    $ IMAGE=gewo/ruby:1.9.3 dev shell
+    docker$ ruby -v
+    ruby 1.9.3p392 (2013-02-22 revision 39386) [x86_64-linux]
+    docker$
 
 ### {MONGODB,REDIS,MYSQL}\_VER
 
 Set version of background services on `dev start`
 
-```sh
-$ # Run the mongodb server with image gewo/mongodb:2.4.10. Other images
-$ # use :latest per default.
-$ MONGODB_VER=2.4.10 dev start
-```
+    $ # Run the mongodb server with image gewo/mongodb:2.4.10. Other images
+    $ # use :latest per default.
+    $ MONGODB_VER=2.4.10 dev start
 
 ## Commands
 
 ### shell
 
-```sh
-dev shell [IMAGE]
-```
+    dev shell [IMAGE]
 
 `IMAGE` by default is the latest ruby image.
 
 **Example**
 
-```sh
-$ dev shell gewo/node
-docker$ nodejs -v
-v0.10.29
-docker$
-```
+    $ dev shell gewo/node
+    docker$ nodejs -v
+    v0.10.29
+    docker$
 
 ## TODO
 
