@@ -38,7 +38,7 @@ else
   build_image mongodb 3.0.5
   build_image mongodb 3.0.5_tiger
   build_image mongodb 3.2.4
-  build_image mongodb 3.2.9
+  build_image mongodb 3.2.8
   build_image mongodb
   build_image mysql
   build_image redis-base
