@@ -19,7 +19,7 @@ RUN apt-get install -y libmagickwand5 libmagickwand-dev imagemagick
 RUN apt-get install -y nodejs
 
 # MySQL gem dependencies and client
-RUN apt-get install -y libmysqlclient-dev mysql-client
+RUN apt-get install -y libmysqlclient-dev mysql-client-5.6
 
 # Headless Selenium Tests
 RUN apt-get install -y firefox xvfb
