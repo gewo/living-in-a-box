@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+set -x
+
+if [ ! -e /data/ibdata1 ]; then
+  mysql_install_db
+  chown mysql:mysql /data
+  mysqld_safe &
+  sleep 20
+  mysql -e "GRANT ALL ON *.* to 'root'@'%'; FLUSH PRIVILEGES"
+  killall mysqld
+  sleep 10
+fi
+
+mysqld_safe
